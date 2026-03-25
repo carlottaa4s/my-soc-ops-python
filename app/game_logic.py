@@ -35,8 +35,7 @@ def generate_scavenger_hunt_list() -> list[ScavengerHuntItem]:
     """Generate a new scavenger hunt list with all 24 questions."""
     questions = random.sample(QUESTIONS, 24)
     return [
-        ScavengerHuntItem(id=i, text=question)
-        for i, question in enumerate(questions)
+        ScavengerHuntItem(id=i, text=question) for i, question in enumerate(questions)
     ]
 
 

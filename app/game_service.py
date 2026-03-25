@@ -80,7 +80,10 @@ class GameSession:
     def handle_hunt_item_click(self, item_id: int) -> None:
         from app.game_logic import toggle_hunt_item
 
-        if self.game_state != GameState.PLAYING or self.game_mode != GameMode.SCAVENGER_HUNT:
+        if (
+            self.game_state != GameState.PLAYING
+            or self.game_mode != GameMode.SCAVENGER_HUNT
+        ):
             return
         self.hunt_items = toggle_hunt_item(self.hunt_items, item_id)
         if self.hunt_complete:
