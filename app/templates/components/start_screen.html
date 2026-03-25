@@ -9,6 +9,7 @@
             <ul class="text-left text-arcade-cyan text-sm space-y-2" style="color: var(--arcade-cyan); font-family: 'Courier Prime', monospace;">
                 <li>BINGO: Get 5 in a row</li>
                 <li>HUNT: Find all 24</li>
+                <li>CARDS: Shuffle & discover</li>
             </ul>
         </div>
 
@@ -26,6 +27,13 @@
                 hx-swap="outerHTML"
                 class="w-full arcade-button" style="background-color: var(--arcade-green); border: 4px solid var(--arcade-white); box-shadow: 6px 6px 0 var(--arcade-shadow); font-family: 'Press Start 2P', cursive; font-size: 0.65rem; padding: 16px 24px; color: var(--arcade-black); font-weight: bold;">
                 ► SCAVENGER HUNT ◄
+            </button>
+            <button
+                hx-post="/start-card-deck"
+                hx-target="#game-container"
+                hx-swap="outerHTML"
+                class="w-full arcade-button" style="background-color: var(--arcade-red); border: 4px solid var(--arcade-white); box-shadow: 6px 6px 0 var(--arcade-shadow); font-family: 'Press Start 2P', cursive; font-size: 0.65rem; padding: 16px 24px; color: var(--arcade-white); font-weight: bold;">
+                ► CARD SHUFFLE ◄
             </button>
         </div>
     </div>

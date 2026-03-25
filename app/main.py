@@ -54,6 +54,22 @@ async def start_scavenger_hunt_game(request: Request) -> Response:
     return _render_session(request, "components/scavenger_hunt_screen.html", session)
 
 
+@app.post("/start-card-deck", response_class=HTMLResponse)
+async def start_card_deck_game(request: Request) -> Response:
+    session = _get_game_session(request)
+    session.start_game_card_deck()
+    return _render_session(request, "components/card_deck_screen.html", session)
+
+
+@app.post("/next-card", response_class=HTMLResponse)
+async def next_card(request: Request) -> Response:
+    session = _get_game_session(request)
+    if session.game_mode != GameMode.CARD_DECK:
+        return _render_session(request, "components/start_screen.html", session)
+    session.get_next_card()
+    return _render_session(request, "components/card_deck_screen.html", session)
+
+
 @app.post("/toggle/{square_id}", response_class=HTMLResponse)
 async def toggle_square(request: Request, square_id: int) -> Response:
     session = _get_game_session(request)

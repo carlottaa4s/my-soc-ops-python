@@ -11,6 +11,7 @@ from app.game_logic import (
 from app.models import (
     BingoLine,
     BingoSquareData,
+    CardData,
     GameMode,
     GameState,
     ScavengerHuntItem,
@@ -25,6 +26,8 @@ class GameSession:
     game_state: GameState = GameState.START
     board: list[BingoSquareData] = field(default_factory=list)
     hunt_items: list[ScavengerHuntItem] = field(default_factory=list)
+    cards: list[CardData] = field(default_factory=list)
+    current_card_index: int = 0
     winning_line: BingoLine | None = None
     show_bingo_modal: bool = False
 
@@ -53,6 +56,8 @@ class GameSession:
         """Reset shared game state."""
         self.board = []
         self.hunt_items = []
+        self.cards = []
+        self.current_card_index = 0
         self.winning_line = None
         self.game_state = GameState.PLAYING
         self.show_bingo_modal = False
@@ -66,6 +71,37 @@ class GameSession:
         self._reset_state()
         self.game_mode = GameMode.SCAVENGER_HUNT
         self.hunt_items = generate_scavenger_hunt_list()
+
+    def start_game_card_deck(self) -> None:
+        self._reset_state()
+        self.game_mode = GameMode.CARD_DECK
+        self.cards = self._generate_card_deck()
+        self.current_card_index = 0
+
+    def _generate_card_deck(self) -> list[CardData]:
+        """Generate a shuffled deck of cards from the question bank."""
+        from app.data import QUESTIONS
+        import random
+
+        cards = [CardData(id=i, text=q) for i, q in enumerate(QUESTIONS)]
+        random.shuffle(cards)
+        return cards
+
+    def get_next_card(self) -> CardData | None:
+        """Get the next card and advance the index."""
+        if not self.cards:
+            return None
+        if self.current_card_index >= len(self.cards):
+            self.current_card_index = 0  # Loop back to start
+        card = self.cards[self.current_card_index]
+        self.current_card_index += 1
+        return card
+
+    def get_current_card(self) -> CardData | None:
+        """Get the current card without advancing."""
+        if not self.cards or self.current_card_index >= len(self.cards):
+            return None
+        return self.cards[self.current_card_index]
 
     def handle_square_click(self, square_id: int) -> None:
         if self.game_state != GameState.PLAYING or self.game_mode != GameMode.BINGO:
@@ -95,6 +131,8 @@ class GameSession:
         self.game_state = GameState.START
         self.board = []
         self.hunt_items = []
+        self.cards = []
+        self.current_card_index = 0
         self.winning_line = None
         self.show_bingo_modal = False
 

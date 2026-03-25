@@ -7,6 +7,7 @@ from pydantic import BaseModel, ConfigDict
 class GameMode(StrEnum):
     BINGO = "bingo"
     SCAVENGER_HUNT = "scavenger_hunt"
+    CARD_DECK = "card_deck"
 
 
 class GameState(StrEnum):
@@ -35,6 +36,15 @@ class ScavengerHuntItem(BaseModel):
     id: int
     text: str
     is_found: bool = False
+
+
+class CardData(BaseModel):
+    """A single card in the card deck."""
+
+    model_config = ConfigDict(frozen=True)
+
+    id: int
+    text: str
 
 
 class BingoLine(BaseModel):
