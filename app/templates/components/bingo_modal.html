@@ -1,15 +1,15 @@
 <div class="fixed inset-0 bg-black/50 flex items-center justify-center p-4 z-50">
-    <div class="bg-white rounded-xl p-6 max-w-xs w-full text-center shadow-xl animate-[bounce_0.5s_ease-out]">
-        <div class="text-5xl mb-4">🎉</div>
-        <h2 class="text-3xl font-bold text-amber-500 mb-2">BINGO!</h2>
-        <p class="text-gray-600 mb-6">You completed a line!</p>
+    <div class="arcade-shake-modal arcade-border-thick p-6 max-w-xs w-full text-center" style="background-color: var(--arcade-black); border: 5px solid var(--arcade-yellow); box-shadow: 6px 6px 0 var(--arcade-shadow), inset -3px -3px 0 var(--arcade-shadow); animation: arcade-shake 0.6s ease-in-out;">
+        <div class="text-5xl mb-4">👾</div>
+        <h2 class="text-3xl font-bold text-arcade-yellow mb-2 arcade-flash" style="color: var(--arcade-yellow); font-family: 'Press Start 2P', cursive; animation: arcade-flash 0.3s ease-in-out infinite;">BINGO!</h2>
+        <p class="text-arcade-cyan mb-6" style="color: var(--arcade-cyan); font-family: 'Courier Prime', monospace; font-weight: bold; font-size: 0.85rem;">YOU GOT A LINE!</p>
 
         <button
             hx-post="/dismiss-modal"
             hx-target="#game-container"
             hx-swap="outerHTML"
-            class="w-full bg-accent text-white font-semibold py-3 px-6 rounded-lg active:bg-accent-light transition-colors">
-            Keep Playing
+            class="w-full arcade-button" style="background-color: var(--arcade-red); border: 4px solid var(--arcade-white); box-shadow: 4px 4px 0 var(--arcade-shadow); font-family: 'Press Start 2P', cursive; font-size: 0.6rem; padding: 14px 20px; color: var(--arcade-white); font-weight: bold;">
+            ► KEEP PLAYING ◄
         </button>
     </div>
 </div>

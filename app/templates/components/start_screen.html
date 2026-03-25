@@ -1,15 +1,15 @@
 <div id="game-container">
-<div class="flex flex-col items-center justify-center min-h-full p-6 bg-gray-50">
+<div class="flex flex-col items-center justify-center min-h-full p-6 bg-black">
     <div class="text-center max-w-sm">
-        <h1 class="text-4xl font-bold text-gray-900 mb-2">Soc Ops</h1>
-        <p class="text-lg text-gray-600 mb-8">Social Bingo</p>
+        <h1 class="text-5xl font-bold text-arcade-yellow mb-2" style="color: var(--arcade-yellow);">SOC OPS</h1>
+        <p class="text-lg text-arcade-cyan mb-8" style="color: var(--arcade-cyan); font-family: 'Courier Prime', monospace; font-weight: bold;">SOCIAL BINGO ARCADE</p>
 
-        <div class="bg-white rounded-lg p-6 shadow-sm border border-gray-200 mb-8">
-            <h2 class="font-semibold text-gray-800 mb-3">How to play</h2>
-            <ul class="text-left text-gray-600 text-sm space-y-2">
-                <li>• Find people who match the questions</li>
-                <li>• Tap a square when you find a match</li>
-                <li>• Get 5 in a row to win!</li>
+        <div class="arcade-border-thick p-6 mb-8" style="background-color: var(--arcade-black); border: 4px solid var(--arcade-white);">
+            <h2 class="font-bold text-arcade-white mb-3" style="color: var(--arcade-white); font-family: 'Press Start 2P', cursive; font-size: 0.7rem;">HOW TO PLAY</h2>
+            <ul class="text-left text-arcade-cyan text-sm space-y-2" style="color: var(--arcade-cyan); font-family: 'Courier Prime', monospace;">
+                <li>► FIND PEOPLE WHO MATCH</li>
+                <li>► TAP A SQUARE WHEN FOUND</li>
+                <li>► GET 5 IN A ROW TO WIN!</li>
             </ul>
         </div>
 
@@ -17,8 +17,8 @@
             hx-post="/start"
             hx-target="#game-container"
             hx-swap="outerHTML"
-            class="w-full bg-accent text-white font-semibold py-4 px-8 rounded-lg text-lg active:bg-accent-light transition-colors">
-            Start Game
+            class="w-full arcade-button" style="background-color: var(--arcade-red); border: 4px solid var(--arcade-white); box-shadow: 6px 6px 0 var(--arcade-shadow); font-family: 'Press Start 2P', cursive; font-size: 0.65rem; padding: 16px 24px; color: var(--arcade-white); font-weight: bold;">
+            ► START GAME ◄
         </button>
     </div>
 </div>

@@ -8,19 +8,43 @@
         hx-swap="outerHTML"
         {% endif %}
         {% if square.is_free_space %}disabled{% endif %}
-        class="relative flex items-center justify-center p-1 text-center border border-gray-300 rounded transition-all duration-150 select-none min-h-[60px] text-xs leading-tight
-        {%- if square.is_marked %}
-            {%- if is_winning %} bg-amber-200 border-amber-400 text-amber-900
-            {%- else %} bg-marked border-marked-border text-green-800
+        class="relative flex items-center justify-center p-1 text-center border transition-all duration-150 select-none min-h-[60px] text-xs leading-tight"
+        style="
+            {%- if square.is_marked %}
+                {%- if is_winning %} 
+                    background-color: var(--arcade-red);
+                    border: 3px solid var(--arcade-yellow);
+                    color: var(--arcade-yellow);
+                    box-shadow: 4px 4px 0 var(--arcade-shadow), inset -2px -2px 0 var(--arcade-shadow);
+                {%- else %} 
+                    background-color: var(--arcade-yellow);
+                    border: 3px solid var(--arcade-white);
+                    color: var(--arcade-black);
+                    box-shadow: 3px 3px 0 var(--arcade-shadow);
+                {%- endif %}
+            {%- else %} 
+                background-color: var(--arcade-blue);
+                border: 3px solid var(--arcade-white);
+                color: var(--arcade-white);
+                box-shadow: 2px 2px 0 var(--arcade-shadow);
             {%- endif %}
-        {%- else %} bg-white text-gray-700 active:bg-gray-100
-        {%- endif %}
-        {%- if square.is_free_space %} font-bold text-sm{% endif %}"
+            {%- if square.is_free_space %} 
+                background-color: var(--arcade-cyan);
+                border: 3px solid var(--arcade-white);
+                color: var(--arcade-black);
+                font-family: 'Press Start 2P', cursive;
+                font-size: 0.5rem;
+                font-weight: bold;
+                box-shadow: 3px 3px 0 var(--arcade-shadow);
+            {% endif %}
+            font-family: 'Courier Prime', monospace;
+            font-weight: bold;
+        "
         aria-pressed="{{ 'true' if square.is_marked else 'false' }}"
         aria-label="{{ 'Free space' if square.is_free_space else square.text }}">
         <span class="wrap-break-word hyphens-auto">{{ square.text }}</span>
         {% if square.is_marked and not square.is_free_space %}
-        <span class="absolute top-0.5 right-0.5 text-green-600 text-xs">✓</span>
+        <span class="absolute top-0.5 right-0.5" style="font-size: 1rem; color: var(--arcade-black);">★</span>
         {% endif %}
     </button>
     {% endfor %}
