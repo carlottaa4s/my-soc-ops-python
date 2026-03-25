@@ -56,14 +56,17 @@ def _get_winning_lines() -> tuple[BingoLine, ...]:
     """Get all possible winning lines (cached)."""
     lines: list[BingoLine] = []
 
+    # Rows
     for row in range(BOARD_SIZE):
         squares = [row * BOARD_SIZE + col for col in range(BOARD_SIZE)]
         lines.append(BingoLine(type="row", index=row, squares=squares))
 
+    # Columns
     for col in range(BOARD_SIZE):
         squares = [row * BOARD_SIZE + col for row in range(BOARD_SIZE)]
         lines.append(BingoLine(type="column", index=col, squares=squares))
 
+    # Diagonals
     lines.append(BingoLine(type="diagonal", index=0, squares=[0, 6, 12, 18, 24]))
     lines.append(BingoLine(type="diagonal", index=1, squares=[4, 8, 12, 16, 20]))
 

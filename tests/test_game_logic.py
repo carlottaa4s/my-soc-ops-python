@@ -3,7 +3,9 @@ from app.game_logic import (
     CENTER_INDEX,
     check_bingo,
     generate_board,
+    generate_scavenger_hunt_list,
     get_winning_square_ids,
+    toggle_hunt_item,
     toggle_square,
 )
 from app.models import BingoLine, BingoSquareData
@@ -132,3 +134,73 @@ class TestGetWinningSquareIds:
     def test_returns_square_ids(self):
         line = BingoLine(type="row", index=0, squares=[0, 1, 2, 3, 4])
         assert get_winning_square_ids(line) == {0, 1, 2, 3, 4}
+
+
+class TestGenerateScavengerHuntList:
+    def test_hunt_list_has_24_items(self):
+        hunt_list = generate_scavenger_hunt_list()
+        assert len(hunt_list) == 24
+
+    def test_hunt_items_are_not_found_initially(self):
+        hunt_list = generate_scavenger_hunt_list()
+        for item in hunt_list:
+            assert item.is_found is False
+
+    def test_hunt_items_have_sequential_ids(self):
+        hunt_list = generate_scavenger_hunt_list()
+        for i, item in enumerate(hunt_list):
+            assert item.id == i
+
+    def test_hunt_items_have_unique_questions(self):
+        hunt_list = generate_scavenger_hunt_list()
+        texts = [item.text for item in hunt_list]
+        assert len(texts) == len(set(texts)), "Hunt items should have unique questions"
+
+    def test_all_hunt_questions_from_pool(self):
+        hunt_list = generate_scavenger_hunt_list()
+        texts = {item.text for item in hunt_list}
+        assert texts.issubset(set(QUESTIONS))
+
+    def test_hunt_list_is_shuffled(self):
+        """Verify two hunt lists aren't identical (high probability)."""
+        hunt1 = generate_scavenger_hunt_list()
+        hunt2 = generate_scavenger_hunt_list()
+        texts1 = [item.text for item in hunt1]
+        texts2 = [item.text for item in hunt2]
+        assert texts1 != texts2
+
+
+class TestToggleHuntItem:
+    def test_toggle_marks_unfound_item(self):
+        items = generate_scavenger_hunt_list()
+        assert items[0].is_found is False
+        new_items = toggle_hunt_item(items, 0)
+        assert new_items[0].is_found is True
+
+    def test_toggle_unmarks_found_item(self):
+        items = generate_scavenger_hunt_list()
+        items = toggle_hunt_item(items, 0)
+        assert items[0].is_found is True
+        items = toggle_hunt_item(items, 0)
+        assert items[0].is_found is False
+
+    def test_toggle_does_not_affect_other_items(self):
+        items = generate_scavenger_hunt_list()
+        original_state = [item.is_found for item in items[1:]]
+        new_items = toggle_hunt_item(items, 0)
+        new_state = [item.is_found for item in new_items[1:]]
+        assert new_state == original_state
+
+    def test_toggle_returns_new_list(self):
+        items = generate_scavenger_hunt_list()
+        new_items = toggle_hunt_item(items, 0)
+        assert items is not new_items
+
+    def test_toggle_item_with_invalid_id_does_nothing(self):
+        items = generate_scavenger_hunt_list()
+        original_texts = [item.text for item in items]
+        new_items = toggle_hunt_item(items, 999)
+        new_texts = [item.text for item in new_items]
+        assert original_texts == new_texts
+        for item in new_items:
+            assert item.is_found is False

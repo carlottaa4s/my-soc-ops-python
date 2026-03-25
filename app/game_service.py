@@ -3,7 +3,9 @@ from dataclasses import dataclass, field
 from app.game_logic import (
     check_bingo,
     generate_board,
+    generate_scavenger_hunt_list,
     get_winning_square_ids,
+    toggle_hunt_item,
     toggle_square,
 )
 from app.models import (
@@ -47,23 +49,23 @@ class GameSession:
             return False
         return all(item.is_found for item in self.hunt_items)
 
-    def start_game_bingo(self) -> None:
-        self.game_mode = GameMode.BINGO
-        self.board = generate_board()
+    def _reset_state(self) -> None:
+        """Reset shared game state."""
+        self.board = []
         self.hunt_items = []
         self.winning_line = None
         self.game_state = GameState.PLAYING
         self.show_bingo_modal = False
 
-    def start_game_scavenger_hunt(self) -> None:
-        from app.game_logic import generate_scavenger_hunt_list
+    def start_game_bingo(self) -> None:
+        self._reset_state()
+        self.game_mode = GameMode.BINGO
+        self.board = generate_board()
 
+    def start_game_scavenger_hunt(self) -> None:
+        self._reset_state()
         self.game_mode = GameMode.SCAVENGER_HUNT
         self.hunt_items = generate_scavenger_hunt_list()
-        self.board = []
-        self.winning_line = None
-        self.game_state = GameState.PLAYING
-        self.show_bingo_modal = False
 
     def handle_square_click(self, square_id: int) -> None:
         if self.game_state != GameState.PLAYING or self.game_mode != GameMode.BINGO:

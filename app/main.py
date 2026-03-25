@@ -26,70 +26,60 @@ def _get_game_session(request: Request) -> GameSession:
     return get_session(request.session["session_id"])
 
 
+def _render_session(
+    request: Request, template_name: str, session: GameSession
+) -> Response:
+    """Render a template with session context."""
+    context = {"session": session, "GameState": GameState}
+    return templates.TemplateResponse(request, template_name, context)
+
+
 @app.get("/", response_class=HTMLResponse)
 async def home(request: Request) -> Response:
     session = _get_game_session(request)
-    return templates.TemplateResponse(
-        request,
-        "home.html",
-        {"session": session, "GameState": GameState},
-    )
+    return _render_session(request, "home.html", session)
 
 
 @app.post("/start-bingo", response_class=HTMLResponse)
 async def start_bingo_game(request: Request) -> Response:
     session = _get_game_session(request)
     session.start_game_bingo()
-    return templates.TemplateResponse(
-        request, "components/game_screen.html", {"session": session}
-    )
+    return _render_session(request, "components/game_screen.html", session)
 
 
 @app.post("/start-scavenger-hunt", response_class=HTMLResponse)
 async def start_scavenger_hunt_game(request: Request) -> Response:
     session = _get_game_session(request)
     session.start_game_scavenger_hunt()
-    return templates.TemplateResponse(
-        request, "components/scavenger_hunt_screen.html", {"session": session}
-    )
+    return _render_session(request, "components/scavenger_hunt_screen.html", session)
 
 
 @app.post("/toggle/{square_id}", response_class=HTMLResponse)
 async def toggle_square(request: Request, square_id: int) -> Response:
     session = _get_game_session(request)
     session.handle_square_click(square_id)
-    return templates.TemplateResponse(
-        request, "components/game_screen.html", {"session": session}
-    )
+    return _render_session(request, "components/game_screen.html", session)
 
 
 @app.post("/toggle-hunt/{item_id}", response_class=HTMLResponse)
 async def toggle_hunt_item(request: Request, item_id: int) -> Response:
     session = _get_game_session(request)
     session.handle_hunt_item_click(item_id)
-    return templates.TemplateResponse(
-        request, "components/scavenger_hunt_screen.html", {"session": session}
-    )
+    return _render_session(request, "components/scavenger_hunt_screen.html", session)
 
 
 @app.post("/reset", response_class=HTMLResponse)
 async def reset_game(request: Request) -> Response:
     session = _get_game_session(request)
     session.reset_game()
-    return templates.TemplateResponse(
-        request,
-        "components/start_screen.html",
-        {"session": session, "GameState": GameState},
-    )
+    return _render_session(request, "components/start_screen.html", session)
 
 
 @app.post("/dismiss-modal", response_class=HTMLResponse)
 async def dismiss_modal(request: Request) -> Response:
     session = _get_game_session(request)
     session.dismiss_modal()
-    return templates.TemplateResponse(
-        request, "components/game_screen.html", {"session": session}
-    )
+    return _render_session(request, "components/game_screen.html", session)
 
 
 def run() -> None:
