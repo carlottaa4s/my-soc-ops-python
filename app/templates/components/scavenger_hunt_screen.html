@@ -1,0 +1,58 @@
+<div id="game-container">
+<div class="flex flex-col min-h-full bg-black">
+    <!-- Header -->
+    <header class="flex items-center justify-between p-3 bg-black border-b" style="border: 3px solid var(--arcade-yellow); background-color: var(--arcade-black);">
+        <button
+            hx-post="/reset"
+            hx-target="#game-container"
+            hx-swap="outerHTML"
+            class="text-arcade-yellow text-sm px-3 py-1.5 rounded transition-all" style="color: var(--arcade-yellow); background-color: transparent; border: 2px solid var(--arcade-yellow); font-family: 'Courier Prime', monospace; font-weight: bold;">
+            ◄ BACK
+        </button>
+        <h1 class="font-bold text-arcade-yellow" style="color: var(--arcade-yellow); font-family: 'Press Start 2P', cursive; font-size: 1rem;">SOC OPS</h1>
+        <div class="w-16"></div>
+    </header>
+
+    <!-- Progress Bar -->
+    <div class="p-4 bg-black border-b" style="border: 2px solid var(--arcade-cyan);">
+        <div class="flex justify-between mb-2">
+            <span class="text-arcade-cyan font-bold text-sm" style="color: var(--arcade-cyan); font-family: 'Courier Prime', monospace;">ITEMS FOUND</span>
+            <span class="text-arcade-yellow font-bold text-sm" style="color: var(--arcade-yellow); font-family: 'Courier Prime', monospace;">{{ session.hunt_progress[0] }} / {{ session.hunt_progress[1] }}</span>
+        </div>
+        <div style="background-color: var(--arcade-black); border: 2px solid var(--arcade-white); height: 24px; position: relative; overflow: hidden;">
+            <div style="background-color: var(--arcade-green); height: 100%; width: {{ (session.hunt_progress[0] / session.hunt_progress[1] * 100)|int }}%; transition: width 0.2s ease;">
+            </div>
+            <div style="position: absolute; top: 0; left: 0; width: 100%; height: 100%; display: flex; align-items: center; justify-content: center; font-family: 'Courier Prime', monospace; font-weight: bold; font-size: 0.75rem; color: var(--arcade-black); text-shadow: 1px 1px 0 rgba(0,0,0,0.5);">
+                {{ (session.hunt_progress[0] / session.hunt_progress[1] * 100)|int }}%
+            </div>
+        </div>
+    </div>
+
+    <!-- Hunt Items List -->
+    <div class="flex-1 overflow-y-auto p-4">
+        <div class="space-y-2">
+            {% for item in session.hunt_items %}
+            <button
+                hx-post="/toggle-hunt/{{ item.id }}"
+                hx-target="#game-container"
+                hx-swap="outerHTML"
+                class="w-full p-3 text-left flex items-center gap-3 transition-all" style="background-color: {% if item.is_found %}var(--arcade-yellow){% else %}var(--arcade-blue){% endif %}; border: 2px solid var(--arcade-white); color: {% if item.is_found %}var(--arcade-black){% else %}var(--arcade-white){% endif %}; font-family: 'Courier Prime', monospace; font-weight: bold; font-size: 0.85rem; box-shadow: 3px 3px 0 var(--arcade-shadow); cursor: pointer;">
+                {% if item.is_found %}
+                    <span style="font-size: 1.2rem; min-width: 20px;">★</span>
+                {% else %}
+                    <span style="display: inline-block; width: 20px; height: 20px; border: 2px solid currentColor; background-color: transparent; min-width: 20px;"></span>
+                {% endif %}
+                <span>{{ item.text }}</span>
+            </button>
+            {% endfor %}
+        </div>
+    </div>
+
+    <!-- Completion Message -->
+    {% if session.hunt_complete %}
+    <div class="bg-arcade-red text-arcade-white text-center py-4 font-semibold" style="background-color: var(--arcade-red); color: var(--arcade-yellow); border: 3px solid var(--arcade-yellow); font-family: 'Press Start 2P', cursive; font-size: 0.8rem; animation: arcade-flash 0.3s ease-in-out infinite;">
+        ★ ALL FOUND! ★
+    </div>
+    {% endif %}
+</div>
+</div>

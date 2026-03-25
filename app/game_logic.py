@@ -2,7 +2,7 @@ import functools
 import random
 
 from app.data import FREE_SPACE, QUESTIONS
-from app.models import BingoLine, BingoSquareData
+from app.models import BingoLine, BingoSquareData, ScavengerHuntItem
 
 BOARD_SIZE = 5
 CENTER_INDEX = 12  # 5x5 grid, center is index 12 (row 2, col 2)
@@ -28,6 +28,27 @@ def toggle_square(
         if sq.id == square_id and not sq.is_free_space
         else sq
         for sq in board
+    ]
+
+
+def generate_scavenger_hunt_list() -> list[ScavengerHuntItem]:
+    """Generate a new scavenger hunt list with all 24 questions."""
+    questions = random.sample(QUESTIONS, 24)
+    return [
+        ScavengerHuntItem(id=i, text=question)
+        for i, question in enumerate(questions)
+    ]
+
+
+def toggle_hunt_item(
+    items: list[ScavengerHuntItem], item_id: int
+) -> list[ScavengerHuntItem]:
+    """Toggle a hunt item's found state. Returns a new items list."""
+    return [
+        item.model_copy(update={"is_found": not item.is_found})
+        if item.id == item_id
+        else item
+        for item in items
     ]
 
 

@@ -36,12 +36,21 @@ async def home(request: Request) -> Response:
     )
 
 
-@app.post("/start", response_class=HTMLResponse)
-async def start_game(request: Request) -> Response:
+@app.post("/start-bingo", response_class=HTMLResponse)
+async def start_bingo_game(request: Request) -> Response:
     session = _get_game_session(request)
-    session.start_game()
+    session.start_game_bingo()
     return templates.TemplateResponse(
         request, "components/game_screen.html", {"session": session}
+    )
+
+
+@app.post("/start-scavenger-hunt", response_class=HTMLResponse)
+async def start_scavenger_hunt_game(request: Request) -> Response:
+    session = _get_game_session(request)
+    session.start_game_scavenger_hunt()
+    return templates.TemplateResponse(
+        request, "components/scavenger_hunt_screen.html", {"session": session}
     )
 
 
@@ -51,6 +60,15 @@ async def toggle_square(request: Request, square_id: int) -> Response:
     session.handle_square_click(square_id)
     return templates.TemplateResponse(
         request, "components/game_screen.html", {"session": session}
+    )
+
+
+@app.post("/toggle-hunt/{item_id}", response_class=HTMLResponse)
+async def toggle_hunt_item(request: Request, item_id: int) -> Response:
+    session = _get_game_session(request)
+    session.handle_hunt_item_click(item_id)
+    return templates.TemplateResponse(
+        request, "components/scavenger_hunt_screen.html", {"session": session}
     )
 
 

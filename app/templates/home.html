@@ -3,7 +3,11 @@
 {% block content %}
 {% if session.game_state == GameState.START %}
     {% include "components/start_screen.html" %}
-{% else %}
+{% elif session.game_mode == "bingo" %}
     {% include "components/game_screen.html" %}
+{% elif session.game_mode == "scavenger_hunt" %}
+    {% include "components/scavenger_hunt_screen.html" %}
+{% else %}
+    {% include "components/start_screen.html" %}
 {% endif %}
 {% endblock %}

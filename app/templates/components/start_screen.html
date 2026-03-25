@@ -5,21 +5,29 @@
         <p class="text-lg text-arcade-cyan mb-8" style="color: var(--arcade-cyan); font-family: 'Courier Prime', monospace; font-weight: bold;">SOCIAL BINGO ARCADE</p>
 
         <div class="arcade-border-thick p-6 mb-8" style="background-color: var(--arcade-black); border: 4px solid var(--arcade-white);">
-            <h2 class="font-bold text-arcade-white mb-3" style="color: var(--arcade-white); font-family: 'Press Start 2P', cursive; font-size: 0.7rem;">HOW TO PLAY</h2>
+            <h2 class="font-bold text-arcade-white mb-3" style="color: var(--arcade-white); font-family: 'Press Start 2P', cursive; font-size: 0.7rem;">SELECT MODE</h2>
             <ul class="text-left text-arcade-cyan text-sm space-y-2" style="color: var(--arcade-cyan); font-family: 'Courier Prime', monospace;">
-                <li>► FIND PEOPLE WHO MATCH</li>
-                <li>► TAP A SQUARE WHEN FOUND</li>
-                <li>► GET 5 IN A ROW TO WIN!</li>
+                <li>BINGO: Get 5 in a row</li>
+                <li>HUNT: Find all 24</li>
             </ul>
         </div>
 
-        <button
-            hx-post="/start"
-            hx-target="#game-container"
-            hx-swap="outerHTML"
-            class="w-full arcade-button" style="background-color: var(--arcade-red); border: 4px solid var(--arcade-white); box-shadow: 6px 6px 0 var(--arcade-shadow); font-family: 'Press Start 2P', cursive; font-size: 0.65rem; padding: 16px 24px; color: var(--arcade-white); font-weight: bold;">
-            ► START GAME ◄
-        </button>
+        <div class="space-y-3">
+            <button
+                hx-post="/start-bingo"
+                hx-target="#game-container"
+                hx-swap="outerHTML"
+                class="w-full arcade-button" style="background-color: var(--arcade-blue); border: 4px solid var(--arcade-white); box-shadow: 6px 6px 0 var(--arcade-shadow); font-family: 'Press Start 2P', cursive; font-size: 0.65rem; padding: 16px 24px; color: var(--arcade-white); font-weight: bold;">
+                ► BINGO MODE ◄
+            </button>
+            <button
+                hx-post="/start-scavenger-hunt"
+                hx-target="#game-container"
+                hx-swap="outerHTML"
+                class="w-full arcade-button" style="background-color: var(--arcade-green); border: 4px solid var(--arcade-white); box-shadow: 6px 6px 0 var(--arcade-shadow); font-family: 'Press Start 2P', cursive; font-size: 0.65rem; padding: 16px 24px; color: var(--arcade-black); font-weight: bold;">
+                ► SCAVENGER HUNT ◄
+            </button>
+        </div>
     </div>
 </div>
 </div>

@@ -6,15 +6,23 @@ from app.game_logic import (
     get_winning_square_ids,
     toggle_square,
 )
-from app.models import BingoLine, BingoSquareData, GameState
+from app.models import (
+    BingoLine,
+    BingoSquareData,
+    GameMode,
+    GameState,
+    ScavengerHuntItem,
+)
 
 
 @dataclass
 class GameSession:
     """Holds the state for a single game session."""
 
+    game_mode: GameMode | None = None
     game_state: GameState = GameState.START
     board: list[BingoSquareData] = field(default_factory=list)
+    hunt_items: list[ScavengerHuntItem] = field(default_factory=list)
     winning_line: BingoLine | None = None
     show_bingo_modal: bool = False
 
@@ -26,14 +34,39 @@ class GameSession:
     def has_bingo(self) -> bool:
         return self.game_state == GameState.BINGO
 
-    def start_game(self) -> None:
+    @property
+    def hunt_progress(self) -> tuple[int, int]:
+        """Return (found_count, total_count) for scavenger hunt."""
+        found = sum(1 for item in self.hunt_items if item.is_found)
+        return (found, len(self.hunt_items))
+
+    @property
+    def hunt_complete(self) -> bool:
+        """Check if all hunt items are found."""
+        if not self.hunt_items:
+            return False
+        return all(item.is_found for item in self.hunt_items)
+
+    def start_game_bingo(self) -> None:
+        self.game_mode = GameMode.BINGO
         self.board = generate_board()
+        self.hunt_items = []
+        self.winning_line = None
+        self.game_state = GameState.PLAYING
+        self.show_bingo_modal = False
+
+    def start_game_scavenger_hunt(self) -> None:
+        from app.game_logic import generate_scavenger_hunt_list
+
+        self.game_mode = GameMode.SCAVENGER_HUNT
+        self.hunt_items = generate_scavenger_hunt_list()
+        self.board = []
         self.winning_line = None
         self.game_state = GameState.PLAYING
         self.show_bingo_modal = False
 
     def handle_square_click(self, square_id: int) -> None:
-        if self.game_state != GameState.PLAYING:
+        if self.game_state != GameState.PLAYING or self.game_mode != GameMode.BINGO:
             return
         self.board = toggle_square(self.board, square_id)
 
@@ -44,9 +77,20 @@ class GameSession:
                 self.game_state = GameState.BINGO
                 self.show_bingo_modal = True
 
+    def handle_hunt_item_click(self, item_id: int) -> None:
+        from app.game_logic import toggle_hunt_item
+
+        if self.game_state != GameState.PLAYING or self.game_mode != GameMode.SCAVENGER_HUNT:
+            return
+        self.hunt_items = toggle_hunt_item(self.hunt_items, item_id)
+        if self.hunt_complete:
+            self.game_state = GameState.COMPLETE
+
     def reset_game(self) -> None:
+        self.game_mode = None
         self.game_state = GameState.START
         self.board = []
+        self.hunt_items = []
         self.winning_line = None
         self.show_bingo_modal = False
 

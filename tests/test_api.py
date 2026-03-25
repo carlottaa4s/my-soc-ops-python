@@ -17,8 +17,9 @@ class TestHomePage:
     def test_home_contains_start_screen(self, client: TestClient):
         response = client.get("/")
         assert "Soc Ops" in response.text
-        assert "START GAME" in response.text
-        assert "HOW TO PLAY" in response.text
+        assert "BINGO MODE" in response.text
+        assert "SCAVENGER HUNT" in response.text
+        assert "SELECT MODE" in response.text
 
     def test_home_sets_session_cookie(self, client: TestClient):
         response = client.get("/")
@@ -29,14 +30,14 @@ class TestStartGame:
     def test_start_returns_game_board(self, client: TestClient):
         # First visit to get session
         client.get("/")
-        response = client.post("/start")
+        response = client.post("/start-bingo")
         assert response.status_code == 200
         assert "FREE SPACE" in response.text
         assert "BACK" in response.text
 
     def test_board_has_25_squares(self, client: TestClient):
         client.get("/")
-        response = client.post("/start")
+        response = client.post("/start-bingo")
         # Count the toggle buttons (squares with hx-post="/toggle/")
         assert response.text.count('hx-post="/toggle/') == 24  # 24 + 1 free space
 
@@ -44,7 +45,7 @@ class TestStartGame:
 class TestToggleSquare:
     def test_toggle_marks_square(self, client: TestClient):
         client.get("/")
-        client.post("/start")
+        client.post("/start-bingo")
         response = client.post("/toggle/0")
         assert response.status_code == 200
         # The response should contain the game screen with a marked square
@@ -54,17 +55,17 @@ class TestToggleSquare:
 class TestResetGame:
     def test_reset_returns_start_screen(self, client: TestClient):
         client.get("/")
-        client.post("/start")
+        client.post("/start-bingo")
         response = client.post("/reset")
         assert response.status_code == 200
-        assert "START GAME" in response.text
-        assert "HOW TO PLAY" in response.text
+        assert "BINGO MODE" in response.text
+        assert "SELECT MODE" in response.text
 
 
 class TestDismissModal:
     def test_dismiss_returns_game_screen(self, client: TestClient):
         client.get("/")
-        client.post("/start")
+        client.post("/start-bingo")
         response = client.post("/dismiss-modal")
         assert response.status_code == 200
         assert "FREE SPACE" in response.text
