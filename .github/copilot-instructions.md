@@ -111,6 +111,176 @@ uv run uvicorn app.main:app --reload --host 0.0.0.0 --port 8000
 - **Custom utilities** composed in `app/static/css/app.css`
 - Consistent with [CSS Utilities](/.github/instructions/css-utilities.instructions.md)
 
+## Design Guide: Pixel Arcade Aesthetic
+
+**Soc Ops** features a bold **Pixel Arcade** theme inspired by modern retro 80s/90s arcade cabinets. This guide ensures visual consistency across all UI elements.
+
+### Color Palette
+
+| Color | Hex | CSS Variable | Usage |
+|-------|-----|--------------|-------|
+| Black | `#0a0a0a` | `--arcade-black` | Primary background (all screens) |
+| Red | `#ff3333` | `--arcade-red` | Victory/winning states, action buttons, emphasis |
+| Yellow | `#ffff00` | `--arcade-yellow` | Marked squares, titles, accents |
+| Blue | `#3366ff` | `--arcade-blue` | Unmarked squares, interactive elements |
+| Cyan | `#00ffff` | `--arcade-cyan` | Instructions, secondary text, info |
+| Green | `#00ff00` | `--arcade-green` | Free space center (alternative highlight) |
+| White | `#ffffff` | `--arcade-white` | Borders, contrast elements, text on dark |
+
+### Typography
+
+| Font | Usage | CSS Class |
+|------|-------|-----------|
+| **Press Start 2P** (Google Fonts) | Headings, titles, pixel authenticity | `.text-3xl`, `.text-4xl`, `.text-5xl`, `.font-bold` |
+| **Courier Prime** (Google Fonts) | Body text, instructions, monospace feel | Default body font, `.text-sm`, `.text-lg` |
+
+**Implementation**:
+```html
+<!-- In base.html, fonts are imported from Google Fonts -->
+<!-- Headings automatically use Press Start 2P via CSS rules -->
+<h1 class="text-5xl font-bold text-arcade-yellow">SOC OPS</h1>
+
+<!-- Body text uses Courier Prime -->
+<p class="text-arcade-cyan">Instructions here</p>
+```
+
+### Component Styling Patterns
+
+#### Buttons & Interactive Elements
+```html
+<!-- Arcade buttons have chunky 3D borders and press feedback -->
+<button class="arcade-button" style="background-color: var(--arcade-red);">
+    ► ACTION ◄
+</button>
+```
+
+**Styling rules**:
+- 4px solid white border (`.arcade-button` includes this)
+- 4-6px drop shadow (simulates cabinet depth)
+- Active state: transform `translate(4px, 4px)` with reduced shadow (press effect)
+- Background colors: Red (#ff3333), Blue (#3366ff), or Yellow (#ffff00)
+
+#### Bingo Board Squares
+```html
+<!-- Unmarked squares: Blue background, white border -->
+<button style="
+    background-color: var(--arcade-blue);
+    border: 3px solid var(--arcade-white);
+    color: var(--arcade-white);
+    box-shadow: 2px 2px 0 var(--arcade-shadow);
+">Question text</button>
+
+<!-- Marked squares: Yellow background, black text -->
+<button style="
+    background-color: var(--arcade-yellow);
+    border: 3px solid var(--arcade-white);
+    color: var(--arcade-black);
+    box-shadow: 3px 3px 0 var(--arcade-shadow);
+">Question text</button>
+
+<!-- Winning squares: Red background, yellow border, star marker -->
+<button style="
+    background-color: var(--arcade-red);
+    border: 3px solid var(--arcade-yellow);
+    color: var(--arcade-yellow);
+    box-shadow: 4px 4px 0 var(--arcade-shadow);
+">Question text
+    <span style="position: absolute; top: 0.125rem; right: 0.125rem;">★</span>
+</button>
+
+<!-- Free space: Cyan background, white border, pixel font -->
+<button disabled style="
+    background-color: var(--arcade-cyan);
+    border: 3px solid var(--arcade-white);
+    color: var(--arcade-black);
+    font-family: 'Press Start 2P', cursive;
+    font-weight: bold;
+    box-shadow: 3px 3px 0 var(--arcade-shadow);
+">FREE SPACE</button>
+```
+
+#### Header & Navigation
+```html
+<!-- Yellow border header -->
+<header style="border: 3px solid var(--arcade-yellow); background-color: var(--arcade-black);">
+    <h1 class="text-5xl font-bold" style="color: var(--arcade-yellow); font-family: 'Press Start 2P', cursive;">SOC OPS</h1>
+</header>
+
+<!-- Cyan bordered back button -->
+<button style="
+    color: var(--arcade-yellow);
+    border: 2px solid var(--arcade-yellow);
+    background-color: transparent;
+    font-family: 'Courier Prime', monospace;
+    font-weight: bold;
+">◄ BACK</button>
+```
+
+#### Information Boxes (Instructions, Messages)
+```html
+<!-- Chunky bordered box with arcade styling -->
+<div class="arcade-border-thick" style="
+    background-color: var(--arcade-black);
+    border: 4px solid var(--arcade-white);
+">
+    <h2 class="font-bold" style="color: var(--arcade-white); font-family: 'Press Start 2P', cursive; font-size: 0.7rem;">HOW TO PLAY</h2>
+    <ul style="color: var(--arcade-cyan); font-family: 'Courier Prime', monospace;">
+        <li>► FIND PEOPLE WHO MATCH</li>
+        <li>► TAP A SQUARE WHEN FOUND</li>
+        <li>► GET 5 IN A ROW TO WIN!</li>
+    </ul>
+</div>
+```
+
+### Animations
+
+| Animation | Trigger | Effect | Duration |
+|-----------|---------|--------|----------|
+| `arcade-shake` | Bingo modal appears | Screen shake (4px oscillation, 10 frames) | 0.6s |
+| `arcade-flash` | Victory text | Color flash (yellow ↔ red) | 0.3s infinite |
+| Button press | `:active` state | Transform translate + shadow reduction | 50ms |
+| Scanline overlay | Page load | Subtle repeating lines (CRT effect) | N/A |
+
+**Example**: Apply screen shake to bingo modal
+```html
+<div class="arcade-shake-modal" style="animation: arcade-shake 0.6s ease-in-out;">
+    <h2 style="animation: arcade-flash 0.3s ease-in-out infinite;">BINGO!</h2>
+</div>
+```
+
+### Design Consistency Checklist
+
+When adding or modifying UI elements:
+- ✅ All backgrounds use `var(--arcade-black)` (no white/gray backgrounds)
+- ✅ All borders are 2-4px solid (no rounded corners, all 90° angles)
+- ✅ All interactive elements have drop shadow (`box-shadow: Xpx Xpx 0 var(--arcade-shadow)`)
+- ✅ Headings use Press Start 2P (`font-family: 'Press Start 2P', cursive`)
+- ✅ Text uses high-contrast arcade colors (yellow on black, cyan on black, white on dark)
+- ✅ Buttons include active/press state feedback (transform translate)
+- ✅ Use ► and ◄ characters for arcade-style bullets/navigation
+- ✅ Replace ✓ checkmarks with ★ stars for marked indicators
+- ✅ No rounded corners or soft shadows (all arcade, all sharp)
+
+### CSS Variable Reference
+
+Access all arcade colors and effects via CSS variables in `app/static/css/app.css`:
+```css
+:root {
+    --arcade-black: #0a0a0a;
+    --arcade-red: #ff3333;
+    --arcade-yellow: #ffff00;
+    --arcade-blue: #3366ff;
+    --arcade-cyan: #00ffff;
+    --arcade-green: #00ff00;
+    --arcade-white: #ffffff;
+    --arcade-shadow: rgba(0, 0, 0, 0.9);
+    --marked-yellow: #ffff00;
+    --winning-red: #ff3333;
+}
+```
+
+Use in templates: `style="color: var(--arcade-yellow);"`
+
 ## State & Data Management
 
 ### Game State
