@@ -8,7 +8,7 @@ from fastapi.templating import Jinja2Templates
 from starlette.middleware.sessions import SessionMiddleware
 
 from app.game_service import GameSession, get_session
-from app.models import GameState
+from app.models import GameMode, GameState
 
 BASE_DIR = Path(__file__).resolve().parent
 
@@ -58,7 +58,13 @@ async def start_scavenger_hunt_game(request: Request) -> Response:
 async def toggle_square(request: Request, square_id: int) -> Response:
     session = _get_game_session(request)
     session.handle_square_click(square_id)
-    return _render_session(request, "components/game_screen.html", session)
+    # Return appropriate template based on game mode
+    template = (
+        "components/scavenger_hunt_screen.html"
+        if session.game_mode == GameMode.SCAVENGER_HUNT
+        else "components/game_screen.html"
+    )
+    return _render_session(request, template, session)
 
 
 @app.post("/toggle-hunt/{item_id}", response_class=HTMLResponse)

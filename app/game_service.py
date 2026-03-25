@@ -80,7 +80,6 @@ class GameSession:
                 self.show_bingo_modal = True
 
     def handle_hunt_item_click(self, item_id: int) -> None:
-        from app.game_logic import toggle_hunt_item
 
         if (
             self.game_state != GameState.PLAYING
